@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\Blog\Admin\CategoryController;
+use App\Http\Controllers\Api\Blog\Admin\DiggingDeeperController;
 use App\Http\Controllers\Api\Blog\PostController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -14,7 +15,10 @@ Route::prefix('blog')->group(function (): void {
 });
 
 Route::prefix('admin/blog')->group(function (): void {
+    Route::get('digging_deeper/collections', [DiggingDeeperController::class, 'collections'])
+        ->name('blog.admin.digging_deeper.collections');
+
     Route::apiResource('categories', CategoryController::class)
-        ->only(['index', 'store', 'update'])
+        ->only(['index', 'store', 'show', 'update'])
         ->names('blog.admin.categories');
 });
