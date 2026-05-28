@@ -6,13 +6,19 @@ use App\Http\Controllers\Api\Blog\BaseController;
 use App\Http\Requests\BlogCategoryCreateRequest;
 use App\Http\Requests\BlogCategoryUpdateRequest;
 use App\Models\BlogCategory;
+use App\Repositories\BlogCategoryRepository;
 use Illuminate\Support\Str;
 
 class CategoryController extends BaseController
 {
+    public function __construct(private BlogCategoryRepository $blogCategoryRepository)
+    {
+        parent::__construct();
+    }
+
     public function index()
     {
-        return BlogCategory::paginate(5);
+        return $this->blogCategoryRepository->getAllWithPaginate(5);
     }
 
     public function store(BlogCategoryCreateRequest $request)
@@ -38,7 +44,7 @@ class CategoryController extends BaseController
 
     public function show(string $id)
     {
-        $item = BlogCategory::find($id);
+        $item = $this->blogCategoryRepository->getEdit($id);
 
         if (empty($item)) {
             return response()->json([
@@ -51,7 +57,7 @@ class CategoryController extends BaseController
 
     public function update(BlogCategoryUpdateRequest $request, string $id)
     {
-        $item = BlogCategory::find($id);
+        $item = $this->blogCategoryRepository->getEdit($id);
 
         if (empty($item)) {
             return response()->json([
