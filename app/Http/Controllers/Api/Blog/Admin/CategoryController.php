@@ -7,7 +7,6 @@ use App\Http\Requests\BlogCategoryCreateRequest;
 use App\Http\Requests\BlogCategoryUpdateRequest;
 use App\Models\BlogCategory;
 use App\Repositories\BlogCategoryRepository;
-use Illuminate\Support\Str;
 
 class CategoryController extends BaseController
 {
@@ -23,13 +22,7 @@ class CategoryController extends BaseController
 
     public function store(BlogCategoryCreateRequest $request)
     {
-        $data = $request->input();
-
-        if (empty($data['slug'])) {
-            $data['slug'] = Str::slug($data['title']);
-        }
-
-        $item = BlogCategory::create($data);
+        $item = BlogCategory::create($request->input());
 
         if ($item) {
             return [
@@ -65,13 +58,7 @@ class CategoryController extends BaseController
             ], 404);
         }
 
-        $data = $request->input();
-
-        if (empty($data['slug'])) {
-            $data['slug'] = Str::slug($data['title']);
-        }
-
-        $result = $item->update($data);
+        $result = $item->update($request->input());
 
         if ($result) {
             return [
