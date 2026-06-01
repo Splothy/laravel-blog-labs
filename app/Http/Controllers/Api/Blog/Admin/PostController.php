@@ -3,10 +3,11 @@
 namespace App\Http\Controllers\Api\Blog\Admin;
 
 use App\Http\Controllers\Api\Blog\BaseController;
+use App\Http\Requests\BlogPostCreateRequest;
 use App\Http\Requests\BlogPostUpdateRequest;
+use App\Models\BlogPost;
 use App\Repositories\BlogCategoryRepository;
 use App\Repositories\BlogPostRepository;
-use Illuminate\Http\Request;
 
 class PostController extends BaseController
 {
@@ -19,14 +20,22 @@ class PostController extends BaseController
 
     public function index()
     {
-        $paginator = $this->blogPostRepository->getAllWithPaginate();
-
-        return $paginator;
+        return $this->blogPostRepository->getAllWithPaginate();
     }
 
-    public function store(Request $request)
+    public function store(BlogPostCreateRequest $request)
     {
-        //
+        $item = BlogPost::create($request->validated());
+
+        if ($item) {
+            return [
+                'success' => true,
+                'message' => 'Успішно збережено',
+                'data' => $item->fresh(['category:id,title', 'user:id,name']),
+            ];
+        }
+
+        return ['message' => 'Помилка збереження'];
     }
 
     public function update(BlogPostUpdateRequest $request, string $id)
@@ -54,6 +63,18 @@ class PostController extends BaseController
 
     public function destroy(string $id)
     {
-        //
+        $result = BlogPost::destroy($id);
+
+        if ($result) {
+            return [
+                'success' => true,
+                'message' => 'Статтю видалено',
+            ];
+        }
+
+        return response()->json([
+            'success' => false,
+            'message' => "Запис id=[{$id}] не знайдено",
+        ], 404);
     }
 }
