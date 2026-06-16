@@ -55,9 +55,7 @@ class PostController extends BaseController
             ], 404);
         }
 
-        return [
-            'data' => new PostResource($item),
-        ];
+        return new PostResource($item);
     }
 
     public function update(BlogPostUpdateRequest $request, string $id)

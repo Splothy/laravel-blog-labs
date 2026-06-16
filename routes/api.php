@@ -20,7 +20,6 @@ Route::prefix('admin/blog')->group(function (): void {
         ->name('blog.admin.digging_deeper.collections');
 
     Route::apiResource('categories', CategoryController::class)
-        ->only(['index', 'store', 'show', 'update'])
         ->names('blog.admin.categories');
 
     Route::apiResource('posts', AdminPostController::class)

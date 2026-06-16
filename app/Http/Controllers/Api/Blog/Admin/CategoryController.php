@@ -18,7 +18,9 @@ class CategoryController extends BaseController
 
     public function index()
     {
-        $paginator = $this->blogCategoryRepository->getAllWithPaginate(5);
+        $paginator = $this->blogCategoryRepository->getAllWithPaginate(
+            request()->integer('per_page', 5)
+        );
 
         return CategoryResource::collection($paginator);
     }
@@ -48,9 +50,7 @@ class CategoryController extends BaseController
             ], 404);
         }
 
-        return [
-            'data' => new CategoryResource($item),
-        ];
+        return new CategoryResource($item);
     }
 
     public function update(BlogCategoryUpdateRequest $request, string $id)
@@ -74,5 +74,22 @@ class CategoryController extends BaseController
         }
 
         return ['message' => 'Помилка збереження'];
+    }
+
+    public function destroy(string $id)
+    {
+        $result = BlogCategory::destroy($id);
+
+        if ($result) {
+            return [
+                'success' => true,
+                'message' => 'Категорію видалено',
+            ];
+        }
+
+        return response()->json([
+            'success' => false,
+            'message' => "Запис id=[{$id}] не знайдено",
+        ], 404);
     }
 }
