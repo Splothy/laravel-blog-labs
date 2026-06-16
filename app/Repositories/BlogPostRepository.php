@@ -47,4 +47,18 @@ class BlogPostRepository extends CoreRepository
     {
         return $this->startConditions()->find($id);
     }
+
+    /**
+     * Отримати статтю для перегляду.
+     */
+    public function getById($id): ?Model
+    {
+        return $this
+            ->startConditions()
+            ->with([
+                'category:id,title',
+                'user:id,name',
+            ])
+            ->find($id);
+    }
 }

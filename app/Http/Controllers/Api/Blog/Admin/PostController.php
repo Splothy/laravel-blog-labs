@@ -42,6 +42,21 @@ class PostController extends BaseController
         return ['message' => 'Помилка збереження'];
     }
 
+    public function show(string $id)
+    {
+        $item = $this->blogPostRepository->getById($id);
+
+        if (empty($item)) {
+            return response()->json([
+                'message' => "Запис id=[{$id}] не знайдено",
+            ], 404);
+        }
+
+        return [
+            'data' => $item,
+        ];
+    }
+
     public function update(BlogPostUpdateRequest $request, string $id)
     {
         $item = $this->blogPostRepository->getEdit($id);
