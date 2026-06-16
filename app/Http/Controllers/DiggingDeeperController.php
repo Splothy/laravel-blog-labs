@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\GenerateCatalog\GenerateCatalogMainJob;
+use App\Jobs\ProcessVideoJob;
 use App\Models\BlogPost;
 use Carbon\Carbon;
 
@@ -128,5 +130,28 @@ class DiggingDeeperController extends Controller
             'sortedAscFirst' => $sortedAscCollection->first(),
             'sortedDescFirst' => $sortedDescCollection->first(),
         ]);
+    }
+
+    public function processVideo()
+    {
+        dispatch(new ProcessVideoJob());
+
+        return [
+            'success' => true,
+            'message' => 'ProcessVideoJob додано в чергу',
+        ];
+    }
+
+    /**
+     * php artisan queue:listen --queue=generate-catalog --tries=3 --delay=10
+     */
+    public function prepareCatalog()
+    {
+        dispatch(new GenerateCatalogMainJob());
+
+        return [
+            'success' => true,
+            'message' => 'GenerateCatalogMainJob додано в чергу generate-catalog',
+        ];
     }
 }

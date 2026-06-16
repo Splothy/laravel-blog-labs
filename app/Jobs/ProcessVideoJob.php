@@ -22,6 +22,6 @@ class ProcessVideoJob implements ShouldQueue
      */
     public function handle(): void
     {
-        //
+        logger()->info('Process video job done');
     }
 }

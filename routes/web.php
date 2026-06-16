@@ -23,4 +23,8 @@ Route::apiResource('rest', RestTestController::class)->names('restTest');
 Route::prefix('digging_deeper')->group(function (): void {
     Route::get('collections', [DiggingDeeperController::class, 'collections'])
         ->name('digging_deeper.collections');
+    Route::get('process-video', [DiggingDeeperController::class, 'processVideo'])
+        ->name('digging_deeper.process_video');
+    Route::get('prepare-catalog', [DiggingDeeperController::class, 'prepareCatalog'])
+        ->name('digging_deeper.prepare_catalog');
 });
