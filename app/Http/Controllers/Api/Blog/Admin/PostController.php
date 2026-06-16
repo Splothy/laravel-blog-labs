@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Blog\Admin;
 use App\Http\Controllers\Api\Blog\BaseController;
 use App\Http\Requests\BlogPostCreateRequest;
 use App\Http\Requests\BlogPostUpdateRequest;
+use App\Http\Resources\Api\Blog\Admin\PostResource;
 use App\Jobs\BlogPostAfterCreateJob;
 use App\Jobs\BlogPostAfterDeleteJob;
 use App\Models\BlogPost;
@@ -22,7 +23,9 @@ class PostController extends BaseController
 
     public function index()
     {
-        return $this->blogPostRepository->getAllWithPaginate();
+        $paginator = $this->blogPostRepository->getAllWithPaginate();
+
+        return PostResource::collection($paginator);
     }
 
     public function store(BlogPostCreateRequest $request)
@@ -35,7 +38,7 @@ class PostController extends BaseController
             return [
                 'success' => true,
                 'message' => 'Успішно збережено',
-                'data' => $item->fresh(['category:id,title', 'user:id,name']),
+                'data' => new PostResource($item->fresh(['category:id,title', 'user:id,name'])),
             ];
         }
 
@@ -53,7 +56,7 @@ class PostController extends BaseController
         }
 
         return [
-            'data' => $item,
+            'data' => new PostResource($item),
         ];
     }
 
@@ -73,7 +76,7 @@ class PostController extends BaseController
             return [
                 'success' => true,
                 'message' => 'Успішно збережено',
-                'data' => $item->fresh(['category:id,title', 'user:id,name']),
+                'data' => new PostResource($item->fresh(['category:id,title', 'user:id,name'])),
             ];
         }
 

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Blog\Admin;
 use App\Http\Controllers\Api\Blog\BaseController;
 use App\Http\Requests\BlogCategoryCreateRequest;
 use App\Http\Requests\BlogCategoryUpdateRequest;
+use App\Http\Resources\Api\Blog\Admin\CategoryResource;
 use App\Models\BlogCategory;
 use App\Repositories\BlogCategoryRepository;
 
@@ -17,7 +18,9 @@ class CategoryController extends BaseController
 
     public function index()
     {
-        return $this->blogCategoryRepository->getAllWithPaginate(5);
+        $paginator = $this->blogCategoryRepository->getAllWithPaginate(5);
+
+        return CategoryResource::collection($paginator);
     }
 
     public function store(BlogCategoryCreateRequest $request)
@@ -28,7 +31,7 @@ class CategoryController extends BaseController
             return [
                 'success' => true,
                 'message' => 'Успішно збережено',
-                'data' => $item,
+                'data' => new CategoryResource($item->fresh(['parentCategory:id,title'])),
             ];
         }
 
@@ -45,7 +48,9 @@ class CategoryController extends BaseController
             ], 404);
         }
 
-        return $item;
+        return [
+            'data' => new CategoryResource($item),
+        ];
     }
 
     public function update(BlogCategoryUpdateRequest $request, string $id)
@@ -64,7 +69,7 @@ class CategoryController extends BaseController
             return [
                 'success' => true,
                 'message' => 'Успішно збережено',
-                'data' => $item->fresh(),
+                'data' => new CategoryResource($item->fresh(['parentCategory:id,title'])),
             ];
         }
 

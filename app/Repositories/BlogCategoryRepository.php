@@ -18,7 +18,10 @@ class BlogCategoryRepository extends CoreRepository
      */
     public function getEdit($id): ?Model
     {
-        return $this->startConditions()->find($id);
+        return $this
+            ->startConditions()
+            ->with(['parentCategory:id,title'])
+            ->find($id);
     }
 
     /**
